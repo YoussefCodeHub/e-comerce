@@ -44,7 +44,7 @@ export class ProductController {
     return { status: 'success', data: product };
   }
 
-  @Put(':id/favorite')
+  @Post(':id/favorite')
   @UseGuards(AuthGuard)
   async toggleFavorite(@Param('id') id: Types.ObjectId, @Req() req: any) {
     const result = await this.productService.toggleFavorite(id, req.user._id);

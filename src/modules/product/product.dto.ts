@@ -9,6 +9,7 @@ import {
   Min,
   IsUrl,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { AtLeastOne } from '../../common/validators/at-least-one.validator';
 
 export class CreateProductDto {
@@ -23,10 +24,12 @@ export class CreateProductDto {
   @MaxLength(255)
   description?: string;
 
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   price: number;
 
+  @Type(() => Number)
   @IsInt()
   @Min(0)
   stock: number;
@@ -44,7 +47,16 @@ export class CreateProductDto {
 
 export class UpdateProductDto {
   @AtLeastOne(
-    ['name', 'description', 'price', 'stock', 'image', 'category', 'brand'],
+    [
+      'name',
+      'description',
+      'price',
+      'stock',
+      'image',
+      'category',
+      'brand',
+      'slug',
+    ],
     {
       message: 'You must provide at least one field to update',
     },
@@ -64,11 +76,13 @@ export class UpdateProductDto {
   description?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   price?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(0)
   stock?: number;
