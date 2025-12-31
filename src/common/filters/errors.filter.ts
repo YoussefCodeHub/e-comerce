@@ -15,6 +15,8 @@ export class ErrorFilter implements ExceptionFilter {
 
     let error: AppError;
 
+    console.error('[ERROR DETAILS]', exception);
+
     if (exception instanceof AppError) {
       error = exception;
     } else if (exception instanceof HttpException) {
@@ -26,9 +28,12 @@ export class ErrorFilter implements ExceptionFilter {
       );
     } else {
       error = new InternalServerError();
-      console.error('[SERVER ERROR]', exception);
+      if (exception instanceof Error && exception.stack) {
+        console.error(exception.stack);
+      }
     }
 
+    // Client errors
     if (error.errorType === 'client') {
       return response.status(error.statusCode).json({
         status: 'fail',
@@ -38,6 +43,7 @@ export class ErrorFilter implements ExceptionFilter {
       });
     }
 
+    // Server errors
     return response.status(error.statusCode).json({
       status: 'error',
       message: error.message,
