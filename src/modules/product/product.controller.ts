@@ -15,13 +15,16 @@ import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { Types } from 'mongoose';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @Body() data: CreateProductDto,
@@ -52,7 +55,8 @@ export class ProductController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('file'))
   async update(
     @Param('id') id: Types.ObjectId,
