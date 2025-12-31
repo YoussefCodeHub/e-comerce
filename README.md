@@ -351,8 +351,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions or support, please contact:
 
-- **Email**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **Linkid**: https://www.linkedin.com/in/youssef-el-azab-054348356/
+- **GitHub**: [@YoussefCodeHub](https://github.com/YoussefCodeHub)
 
 ---
 
