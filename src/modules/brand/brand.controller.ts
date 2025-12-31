@@ -14,6 +14,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { BrandService } from './brand.service';
 import { CreateBrandDto, UpdateBrandDto } from './brand.dto';
 import { AuthGuard } from '../../common/guards/auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { Types } from 'mongoose';
 
 @Controller('brand')
@@ -21,7 +23,8 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @Body() data: CreateBrandDto,
@@ -45,7 +48,8 @@ export class BrandController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('file'))
   async update(
     @Param('id') id: Types.ObjectId,
