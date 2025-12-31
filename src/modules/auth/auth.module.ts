@@ -18,6 +18,12 @@ import {
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthRepository],
-  exports: [AuthRepository],
+  exports: [
+    AuthRepository,
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: RevokedToken.name, schema: RevokedTokenSchema },
+    ]),
+  ],
 })
 export class AuthModule {}
