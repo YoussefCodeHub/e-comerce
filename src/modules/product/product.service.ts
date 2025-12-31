@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import type { Cache } from 'cache-manager';
+import { RedisService } from '../../modules/redis/redis.service';
 import { Types } from 'mongoose';
 import slugify from 'slugify';
 import { ProductRepository } from '../../database/repositories/product.repository';
@@ -12,7 +11,7 @@ import { NotFoundError } from '../../common/errors/app.error';
 export class ProductService {
   constructor(
     private readonly productRepo: ProductRepository,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly redisService: RedisService,
   ) {}
 
   async create(
@@ -33,17 +32,17 @@ export class ProductService {
       createdBy: userId,
     });
 
-    await this.cacheManager.del('products:all');
+    await this.redisService.del('products:all');
     return product;
   }
 
   async findAll() {
-    const cached = await this.cacheManager.get('products:all');
+    const cached = await this.redisService.getJSON('products:all');
     if (cached) return cached;
 
     const products = await this.productRepo.findAllActive();
 
-    await this.cacheManager.set('products:all', products, 300000); // 5 min
+    await this.redisService.setJSON('products:all', products, 300); // 5 min
     return products;
   }
 
@@ -97,8 +96,7 @@ export class ProductService {
       updatedBy: userId,
     });
 
-    await this.cacheManager.del('products:all');
-
+    await this.redisService.del('products:all');
     return updatedProduct;
   }
 }
